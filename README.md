@@ -5,13 +5,13 @@ PowerShell Module to Read and Write Credentials from the Windows Credential Mana
 This is a fork of the original CredentialManager module by Dave Garnar and has been made Powershell Core compatible (but is also backwards compatible with older Powershell versions and uses the same cmdlet names/parameters as the original module).
 
 ## Installation
-###PowerShell Gallery Installation
+### PowerShell Gallery Installation
 The module is available on the PowerShell Gallery: https://www.powershellgallery.com/packages/TUN.CredentialManager.
 
 1. PS> Save-Module -Name TUN.CredentialManager -Path <path>
 2. PS> Install-Module -Name TUN.CredentialManager
 
-###Manual Installation
+### Manual Installation
 
 1. Dowload the latest verion of the module code from https://github.com/echalone/PowerShell_Credential_Manager/releases
 2. Unzip TUN.CredentialManager.zip and copy the contents to you preferred module path. Usually C:\Users\$UserName\Documents\WindowsPowerShell\Modules.
