@@ -71,9 +71,9 @@ namespace PSCredentialManager.Cmdlet
 
         protected override void ProcessRecord()
         {
-        CredentialManager credentialManager = new CredentialManager();
+            CredentialManager credentialManager = new CredentialManager();
 
-        if (Target == null)
+            if (Target == null)
             {
                 //If no target is specified get all available credentials from the store
                 IEnumerable<Credential> credential;
@@ -210,7 +210,7 @@ namespace PSCredentialManager.Cmdlet
         /// <para type="description">Specifies the password in plain text, cannot be used in conjunction with SecurePassword or Credential parameters.</para>
         /// </summary>
         [Parameter(ParameterSetName = "Plain Text")]
-        public string Password = System.Web.Security.Membership.GeneratePassword(10, 2);
+        public string Password = Helpers.GeneratePassword(10, 2);
 
         /// <summary>
         /// <para type="description">Specifies the password as a secure string, cannot be used in conjunction with SecurePassword or Credential parameters.</para>
@@ -412,7 +412,7 @@ namespace PSCredentialManager.Cmdlet
 
         protected override void ProcessRecord()
         {
-            WriteObject(System.Web.Security.Membership.GeneratePassword(Length, NumberOfSpecialCharacters));
+            WriteObject(Helpers.GeneratePassword(Length, NumberOfSpecialCharacters));
         }
 
         protected override void EndProcessing() { }
