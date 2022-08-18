@@ -32,9 +32,10 @@ Import the module in to your PowerShell session and full help is available in th
 ## History
 
 ### v2.1
-- Stated explicit export of cmdlets in psd1 file for compatibility with Powershell Core
-- Expanded copyright notices
-- Changed module name from CredentialManager to TUN.CredentialManager
+- Explicit naming of cmdlets to export in psd1 for Powershell Core compatibility
+- Rewriting of some internal code to make it compatible with Powershell Core
+- Expanded copyright notices and counted up version number
+- Renamed module from CredentialManager to TUN.CredentialManager
 
 ### v2.0
 - Implemented pipeline support for Get-StoredCredential.
