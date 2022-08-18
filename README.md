@@ -6,16 +6,16 @@ I am no longer working on this project or PowerShell much at all.  If anyone els
 
 ## Installation
 ###PowerShell Gallery Installation
-The module is available on the PowerShell Gallery: https://www.powershellgallery.com/packages/CredentialManager/1.0.0.
+The module is available on the PowerShell Gallery: https://www.powershellgallery.com/packages/TUN.CredentialManager.
 
-1. PS> Save-Module -Name CredentialManager -Path <path>
-2. PS> Install-Module -Name CredentialManager
+1. PS> Save-Module -Name TUN.CredentialManager -Path <path>
+2. PS> Install-Module -Name TUN.CredentialManager
 
 ###Manual Installation
 
 1. Dowload the latest verion of the module code from https://github.com/echalone/PowerShell_Credential_Manager/releases
-2. Unzip CredentialManager.zip and copy the contents to you preferred module path. Usually C:\Users\$UserName\Documents\WindowsPowerShell\Modules.
-3. In your PowerShell session run the command Import-Module CredentialManager
+2. Unzip TUN.CredentialManager.zip and copy the contents to you preferred module path. Usually C:\Users\$UserName\Documents\WindowsPowerShell\Modules.
+3. In your PowerShell session run the command Import-Module TUN.CredentialManager
 
 ## Usage
 
@@ -34,6 +34,7 @@ Import the module in to your PowerShell session and full help is available in th
 ### v2.1
 - Stated explicit export of cmdlets in psd1 file for compatibility with Powershell Core
 - Expanded copyright notices
+- Changed module name from CredentialManager to TUN.CredentialManager
 
 ### v2.0
 - Implemented pipeline support for Get-StoredCredential.
