@@ -2,7 +2,7 @@
 PowerShell Module to Read and Write Credentials from the Windows Credential Manager
 
 ## Ongoing Development and Support
-I am no longer working on this project or PowerShell much at all.  If anyone else wants to take a fork and continue supporting this project. I would be happy to link to that project from here to guide people in the right direction.
+This is a fork of the original CredentialManager module by Dave Garnar and has been made Powershell Core compatible (but is also backwards compatible with older Powershell versions and uses the same cmdlet names/parameters as the original module).
 
 ## Installation
 ###PowerShell Gallery Installation
