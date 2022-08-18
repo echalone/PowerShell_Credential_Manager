@@ -13,7 +13,7 @@ The module is available on the PowerShell Gallery: https://www.powershellgallery
 
 ###Manual Installation
 
-1. Dowload the latest verion of the module code from https://github.com/davotronic5000/PowerShell_Credential_Manager/releases
+1. Dowload the latest verion of the module code from https://github.com/echalone/PowerShell_Credential_Manager/releases
 2. Unzip CredentialManager.zip and copy the contents to you preferred module path. Usually C:\Users\$UserName\Documents\WindowsPowerShell\Modules.
 3. In your PowerShell session run the command Import-Module CredentialManager
 
@@ -30,6 +30,10 @@ Import the module in to your PowerShell session and full help is available in th
 5. Submit a pull request :D
 
 ## History
+
+### v2.1
+- Stated explicit export of cmdlets in psd1 file for compatibility with Powershell Core
+- Expanded copyright notices
 
 ### v2.0
 - Implemented pipeline support for Get-StoredCredential.
@@ -59,12 +63,15 @@ Implementing basic functionality
 Written by Dave Garnar (@davotronic5000)
 http://blog.davotronic5000.co.uk
 
+Edited by Markus Szumovski (echalone)
+https://github.com/echalone
+
 ## License
 
 
 This software is licensed under the [The MIT License (MIT)](http://opensource.org/licenses/MIT).
 
-	Copyright (C) 2016 Dave Garnar
+	Copyright (C) 2016 Dave Garnar and 2022 Markus Szumovski
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
