@@ -59,6 +59,18 @@ namespace PSCredentialManager.Cmdlet
         public CredType Type = CredType.Generic;
 
         /// <summary>
+        /// <para type="description">Switch to not fill the property Password with the clear password and PasswordSize with the unicode size of the clear password</para>
+        /// </summary>
+        [Parameter()]
+        public SwitchParameter ExcludeClearPassword;
+
+        /// <summary>
+        /// <para type="description">Switch to fill the property SecurePassword with the password as SecureString, may need more time for execution</para>
+        /// </summary>
+        [Parameter(ParameterSetName = "CredentialObject Output")]
+        public SwitchParameter IncludeSecurePassword;
+
+        /// <summary>
         /// <para type="description">Switch to return the credentials as Credential objects instead of the default PSObject</para>
         /// </summary>
         [Parameter(ParameterSetName = "CredentialObject Output")]
@@ -79,7 +91,7 @@ namespace PSCredentialManager.Cmdlet
                 IEnumerable<Credential> credential;
                 try
                 {
-                    credential = credentialManager.ReadCred();
+                    credential = credentialManager.ReadCred(!ExcludeClearPassword, IncludeSecurePassword);
 
                     if (!AsCredentialObject)
                     {                     
@@ -95,9 +107,9 @@ namespace PSCredentialManager.Cmdlet
                                 PSCredential psCredential = cred.ToPsCredential();
                                 WriteObject(psCredential);
                             }
-                            catch
+                            catch(Exception ex)
                             {
-                                WriteWarning("Unable to convert Credential object without username or password to PSCredential object");
+                                WriteWarning(ex.Message);
                             }
                         }
                     }
@@ -121,7 +133,7 @@ namespace PSCredentialManager.Cmdlet
                 {
                     //Retrieve credential from Cred Store
                     WriteVerbose("Retrieving requested credential from Windows Credential Manager");
-                    credential = credentialManager.ReadCred(Target, Type);
+                    credential = credentialManager.ReadCred(Target, Type, !ExcludeClearPassword, IncludeSecurePassword);
                 }
                 catch (CredentialNotFoundException exception)
                 {
@@ -145,9 +157,9 @@ namespace PSCredentialManager.Cmdlet
                             PSCredential psCredential = credential.ToPsCredential();
                             WriteObject(psCredential);
                         }
-                        catch
+                        catch(Exception ex)
                         {
-                            WriteWarning("Unable to convert Credential object without username or password to PSCredential object");
+                            WriteWarning(ex.Message);
                         }
                     }
                     else
@@ -192,6 +204,8 @@ namespace PSCredentialManager.Cmdlet
     [OutputType(typeof(Credential))]
     public class NewStoredCredential : PSCmdlet
     {
+        private const uint c_maxPasswordBytes = 2560; // CRED_MAX_CREDENTIAL_BLOB_SIZE (5 * 512) => 2560
+
         /// <summary>
         /// <para type="description">Specifies the target of the credentials being added.</para>
         /// </summary>
@@ -213,7 +227,7 @@ namespace PSCredentialManager.Cmdlet
         public string Password = Helpers.GeneratePassword(10, 2);
 
         /// <summary>
-        /// <para type="description">Specifies the password as a secure string, cannot be used in conjunction with SecurePassword or Credential parameters.</para>
+        /// <para type="description">Specifies the password as a secure string, cannot be used in conjunction with Password or Credential parameters.</para>
         /// </summary>
         [Parameter(ParameterSetName = "Secure String")]
         public SecureString SecurePassword;
@@ -253,11 +267,11 @@ namespace PSCredentialManager.Cmdlet
             if (MyInvocation.BoundParameters.ContainsKey("Password"))
             {
                 //Argument validation
-                //Check password does not exceed 512 bytes
+                //Check password does not exceed 2560 bytes
                 byte[] byteArray = Encoding.Unicode.GetBytes(Password);
-                if (byteArray.Length > 512)
+                if (byteArray.Length > c_maxPasswordBytes)
                 {
-                    Exception exception = new ArgumentOutOfRangeException($"Password", "The specified password has exceeded 512 bytes");
+                    Exception exception = new ArgumentOutOfRangeException($"Password", $"The specified password has exceeded {c_maxPasswordBytes} bytes");
                     ErrorRecord error = new ErrorRecord(exception, "1", ErrorCategory.InvalidArgument, Password);
                     WriteError(error);
                 }
@@ -266,11 +280,11 @@ namespace PSCredentialManager.Cmdlet
             if (MyInvocation.BoundParameters.ContainsKey("SecurePassword"))
             {
                 //Argument validation
-                //Check password does not exceed 512 bytes
+                //Check password does not exceed 2560 bytes
                 byte[] byteArray = Encoding.Unicode.GetBytes(Password);
-                if (byteArray.Length > 512)
+                if (byteArray.Length > c_maxPasswordBytes)
                 {
-                    Exception exception = new ArgumentOutOfRangeException($"SecurePassword", "The specified password has exceeded 512 bytes");
+                    Exception exception = new ArgumentOutOfRangeException($"SecurePassword", $"The specified password has exceeded {c_maxPasswordBytes} bytes");
                     ErrorRecord error = new ErrorRecord(exception, "1", ErrorCategory.InvalidArgument, Password);
                     WriteError(error);
                 }
@@ -283,7 +297,7 @@ namespace PSCredentialManager.Cmdlet
             if (MyInvocation.BoundParameters.ContainsKey("Credentials"))
             {
                 UserName = Credentials.UserName;
-                Password = Credentials.GetNetworkCredential().Password;
+                SecurePassword = Credentials.Password;
             }
 
             //Create credential object
@@ -291,7 +305,8 @@ namespace PSCredentialManager.Cmdlet
             {
                 TargetName = Target,
                 Password = Password,
-                PaswordSize = (UInt32)Encoding.Unicode.GetBytes(Password).Length,
+                SecurePassword = SecurePassword,
+                PaswordSize = Password != null ? (UInt32)Encoding.Unicode.GetBytes(Password).Length : uint.MinValue,
                 AttributeCount = 0,
                 Attributes = IntPtr.Zero,
                 Comment = Comment,
@@ -302,8 +317,6 @@ namespace PSCredentialManager.Cmdlet
                 LastWritten = DateTime.Now,                    
             };
             
-                
-
             //Convert credential to native credential
             NativeCredential nativeCredential = credential.ToNativeCredential();
             CredentialManager credentialManager = new CredentialManager();

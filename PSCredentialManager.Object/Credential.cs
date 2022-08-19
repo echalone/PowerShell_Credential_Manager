@@ -1,6 +1,7 @@
 ﻿using PSCredentialManager.Common.Enum;
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace PSCredentialManager.Common
 {
@@ -14,6 +15,7 @@ namespace PSCredentialManager.Common
         public DateTime LastWritten;
         public uint PaswordSize;
         public string Password;
+        public SecureString SecurePassword;
         public CredPersist Persist;
         public uint AttributeCount;
         public IntPtr Attributes;

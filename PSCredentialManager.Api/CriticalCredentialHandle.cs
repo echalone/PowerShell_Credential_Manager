@@ -13,7 +13,7 @@ namespace PSCredentialManager.Api
             SetHandle(preexistingHandle);
         }
 
-        internal Credential GetCredential()
+        internal Credential GetCredential(bool includeClearPassword, bool includeSecurePassword)
         {
             if (!IsInvalid)
             {
@@ -21,7 +21,12 @@ namespace PSCredentialManager.Api
                 NativeCredential nativeCredential = (NativeCredential)Marshal.PtrToStructure(handle, typeof(NativeCredential));
 
                 // Create a managed Credential type and fill it with data from the native counterpart.
-                Credential credential = nativeCredential.ToCredential();
+                Credential credential = nativeCredential.ToCredential(includeClearPassword, includeSecurePassword);
+
+                nativeCredential = new NativeCredential();
+
+                GC.Collect();
+
                 return credential;
             }
             else
@@ -46,7 +51,7 @@ namespace PSCredentialManager.Api
             return false;
         }
 
-        public Credential[] GetCredentials(int count)
+        public Credential[] GetCredentials(int count, bool includeClearPassword, bool includeSecurePassword)
         {
             if (IsInvalid)
             {
@@ -58,9 +63,12 @@ namespace PSCredentialManager.Api
             {
                 IntPtr pCred = Marshal.ReadIntPtr(handle, inx * IntPtr.Size);
                 NativeCredential nativeCredential = (NativeCredential)Marshal.PtrToStructure(pCred, typeof(NativeCredential));
-                Credential credential = nativeCredential.ToCredential();
+                Credential credential = nativeCredential.ToCredential(includeClearPassword, includeSecurePassword);
                 credentials[inx] = credential;
+                nativeCredential = new NativeCredential();
+                GC.Collect();
             }
+            GC.Collect();
             return credentials;
         }
 
