@@ -21,7 +21,7 @@ namespace PSCredentialManager.Api
             }
         }
 
-        public Credential ReadCred(string target, CredType type)
+        public Credential ReadCred(string target, CredType type, bool includeClearPassword, bool includeSecurePassword)
         {
             IntPtr nativeCredentialPointer;
 
@@ -31,7 +31,7 @@ namespace PSCredentialManager.Api
             {
                 using (CriticalCredentialHandle critCred = new CriticalCredentialHandle(nativeCredentialPointer))
                 {
-                    return critCred.GetCredential();
+                    return critCred.GetCredential(includeClearPassword, includeSecurePassword);
                 }
             }
             else
@@ -57,12 +57,18 @@ namespace PSCredentialManager.Api
 
             if (!delete)
             {
-                string message = $"DeleteCred failed with the error code {lastError}.";
-                throw new Exception(message);
+                if(lastError == 1168)
+                {
+                    throw new CredentialNotFoundException($"DeleteCred failed with the error code {lastError} (credential not found).");
+                }
+                else
+                {
+                    throw new Exception($"DeleteCred failed with the error code {lastError}.");
+                }
             }
         }
 
-        public IEnumerable<Credential> ReadCred()
+        public IEnumerable<Credential> ReadCred(bool includeClearPassword, bool includeSecurePassword)
         {
             int count;
             int flags;
@@ -84,7 +90,7 @@ namespace PSCredentialManager.Api
             if (read)
             {
                 CriticalCredentialHandle credHandle = new CriticalCredentialHandle(pCredentials);
-                return credHandle.GetCredentials(count);
+                return credHandle.GetCredentials(count, includeClearPassword, includeSecurePassword);
             }
             else
             {

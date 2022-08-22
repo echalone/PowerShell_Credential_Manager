@@ -51,13 +51,13 @@ namespace PSCredentialManager.ApiTests
 
                     };
 
-                ShimCriticalCredentialHandle.AllInstances.GetCredential =
-                    (CriticalCredentialHandle criticalCredentialHandle) =>
+                ShimCriticalCredentialHandle.AllInstances.GetCredentialBooleanBoolean =
+                    (CriticalCredentialHandle criticalCredentialHandle, bool includeClearPassword, bool includeSecurePassword) =>
                     {
                         return new Credential();
                     };
 
-                manager.ReadCred("server01", CredType.Generic);
+                manager.ReadCred("server01", CredType.Generic, true, true);
             }
         }
 
@@ -95,13 +95,13 @@ namespace PSCredentialManager.ApiTests
 
                     };
 
-                ShimCriticalCredentialHandle.AllInstances.GetCredentialsInt32 =
-                    (CriticalCredentialHandle credentialHandle, int count) =>
+                ShimCriticalCredentialHandle.AllInstances.GetCredentialsInt32BooleanBoolean =
+                    (CriticalCredentialHandle credentialHandle, int count, bool includeClearPassword, bool includeSecurePassword) =>
                     {
                         return new Credential[count];
                     };
 
-                manager.ReadCred();
+                manager.ReadCred(true, true);
             }
         }
     }

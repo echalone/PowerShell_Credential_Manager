@@ -7,7 +7,7 @@ namespace PSCredentialManager.Api.Extensions
 {
     public static class NativeCredentialExtensions
     {
-        public static Credential ToCredential(this NativeCredential nativeCredential)
+        public static Credential ToCredential(this NativeCredential nativeCredential, bool includeClearPassword, bool includeSecurePassword)
         {
             Credential credential;
 
@@ -22,13 +22,50 @@ namespace PSCredentialManager.Api.Extensions
                     TargetName = Marshal.PtrToStringUni(nativeCredential.TargetName),
                     TargetAlias = Marshal.PtrToStringUni(nativeCredential.TargetAlias),
                     Comment = Marshal.PtrToStringUni(nativeCredential.Comment),
-                    PaswordSize = nativeCredential.CredentialBlobSize,
-                    LastWritten = nativeCredential.LastWritten.ToDateTime()
+                    LastWritten = nativeCredential.LastWritten.ToDateTime(),
+                    SecurePassword = null,
+                    PaswordSize = uint.MinValue,
+                    Password = null,
                 };
 
                 if (0 < nativeCredential.CredentialBlobSize)
                 {
-                    credential.Password = Marshal.PtrToStringUni(nativeCredential.CredentialBlob, (int)nativeCredential.CredentialBlobSize / 2);
+                    if(includeClearPassword)
+                    {
+                        credential.PaswordSize = nativeCredential.CredentialBlobSize;
+                        credential.Password = Marshal.PtrToStringUni(nativeCredential.CredentialBlob, (int)nativeCredential.CredentialBlobSize / 2);
+                    }
+
+                    if(includeSecurePassword)
+                    {
+                        credential.SecurePassword = new System.Security.SecureString();
+                        
+                        for(int i=0, size = (int)nativeCredential.CredentialBlobSize / 2; i< size; i++)
+                        {
+                            string singlesign = Marshal.PtrToStringUni(nativeCredential.CredentialBlob + (i*2), 1);
+                            if(singlesign.Length > 0)
+                            {
+                                credential.SecurePassword.AppendChar(singlesign[0]);
+                            }
+                            singlesign = null;
+                            GC.Collect();
+                        }
+
+                        GC.Collect();
+                    }
+                }
+                else
+                {
+                    if(includeClearPassword)
+                    {
+                        credential.PaswordSize = nativeCredential.CredentialBlobSize;
+                        credential.Password = "";
+                    }
+
+                    if(includeSecurePassword)
+                    {
+                        credential.SecurePassword = new System.Security.SecureString();
+                    }
                 }
             }
             catch (Exception ex)

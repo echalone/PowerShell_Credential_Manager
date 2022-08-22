@@ -10,20 +10,20 @@ namespace PSCredentialManager.Cmdlet.Extensions
         {
             PSCredential psCredential;
 
-            try
+            if (credential.UserName != null && (!string.IsNullOrEmpty(credential.Password) || credential.SecurePassword != null))
             {
-                if (credential.UserName != null && credential.Password != null)
-                {                                 
-                    psCredential = new PSCredential(credential.UserName, credential.Password.ToSecureString());
-                }
-                else
+                try
                 {
-                    throw new Exception("PSCredentialManager.Cmdlet.Utility.PSCredentialUtility.ConvertToPSCredential Unable to convert credential objects with no username");
+                    psCredential = new PSCredential(credential.UserName, credential.SecurePassword ?? credential.Password.ToSecureString());
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Unable to convert credential object", ex);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                throw new Exception("PSCredentialManager.Cmdlet.Utility.PSCredentialUtility.ConvertToPSCredential Unable to convert credential object", ex);
+                throw new Exception("Unable to convert Credential object without username or password to PSCredential object");
             }
 
             return psCredential;

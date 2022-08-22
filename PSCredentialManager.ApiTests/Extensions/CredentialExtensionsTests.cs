@@ -31,6 +31,14 @@ namespace PSCredentialManager.ApiTests.Extensions
 
             Assert.IsNotNull(nativeCredential);
             Assert.IsInstanceOfType(nativeCredential, typeof(NativeCredential));
+            string ncUserName = System.Runtime.InteropServices.Marshal.PtrToStringUni(nativeCredential.UserName);
+            Assert.IsNotNull(ncUserName);
+            Assert.AreEqual(credential.UserName, ncUserName);
+
+            Credential convertedOnlyClear = nativeCredential.ToCredential(true, false);
+            Assert.IsNotNull(convertedOnlyClear);
+            Assert.IsInstanceOfType(convertedOnlyClear, typeof(Credential));
+            Assert.AreEqual(credential.Password, convertedOnlyClear.Password);
         }
 
     }
