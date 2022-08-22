@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TUN.CredentialManager")]
-[assembly: AssemblyCopyright("Copyright © 2015 and 2022")]
+[assembly: AssemblyCopyright("Copyright © 2015 Dave Garnar and 2022 Markus Szumovski")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
