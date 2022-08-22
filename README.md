@@ -14,12 +14,19 @@ The module is available on the PowerShell Gallery: https://www.powershellgallery
 ### Manual Installation
 
 1. Dowload the latest verion of the module code from https://github.com/echalone/PowerShell_Credential_Manager/releases
-2. Unzip TUN.CredentialManager.zip and copy the contents to you preferred module path. Usually C:\Users\$UserName\Documents\WindowsPowerShell\Modules.
+2. Unzip TUN.CredentialManager.zip and copy the contents to you preferred module path. Usually C:\Users\UserName\Documents\WindowsPowerShell\Modules.
 3. In your PowerShell session run the command Import-Module TUN.CredentialManager
 
 ## Usage
 
-Import the module in to your PowerShell session and full help is available in the module with Get-Help
+Import the module in to your PowerShell session and full help is available in the module with Get-Help.
+
+### New with version 3.0
+* Use New-StoredCredential with SecurePassword (of type secure string) or Credentials (of type PSCredential) parameter to use only secure string internally
+* Use Get-StoredCredential with ExcludeClearPassword and IncludeSecurePassword switches to exclude the clear password being stored (even in memory) and to only retrieve and store the password as a secure string (including secure passwords may lengthen execution time)
+* Excluding the clear password and only working with secure password/secure string will also set the PasswordSize to 0
+* Passwords up to 1280 unicode characters (2560 bytes) are now supported (up from 256 unicode characters)
+* Notice: A breaking change with version 3.0 to previous versions is that New-StoredCredential will no longer return the clear password in the property Password of the returned object if you used the Credentials or SecurePassword parameters instead of the clear string Password parameter (if you really need the clear password you can always retrieve it with the Get-StoredProcedure default call afterwards, or just remember it beforehand)
 
 ## Contributing
 
@@ -30,6 +37,15 @@ Import the module in to your PowerShell session and full help is available in th
 5. Submit a pull request :D
 
 ## History
+
+### v3.0
+- Extended possible password length to 1280 unicode characters (2560 bytes)
+- Rewriting internal code to work mainly with secure strings if possible
+- Expanded stored credential object with property SecurePassword to store password as secure string
+- Expanded Get-StoredCredential with switches IncludeSecurePassword and ExcludeClearPassword
+- Returning only clear password in New-StoredCredential if clear Password parameter was provided, but not if secure string SecurePassword parameter or PSCredential Credentials parameter was provided (in this case, only return secure string password in SecurePassword)
+- Extended UnitTests with new test cases
+- Better error messages if credentials to remove weren't found or if password in provided credentials object was too long
 
 ### v2.1
 - Explicit naming of cmdlets to export in psd1 for Powershell Core compatibility

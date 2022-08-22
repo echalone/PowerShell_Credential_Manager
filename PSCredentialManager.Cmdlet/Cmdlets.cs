@@ -33,6 +33,7 @@ namespace PSCredentialManager.Cmdlet
     /// <para>LastWritten    : 23/04/2016 10:01:37</para>
     /// <para>PaswordSize    : 18</para>
     /// <para>Password       : Password1</para>
+    /// <para>SecurePassword : </para>
     /// <para>Persist        : ENTERPRISE</para>
     /// <para>AttributeCount : 0</para>
     /// <para>Attributes     : 0</para>
@@ -67,7 +68,7 @@ namespace PSCredentialManager.Cmdlet
         /// <summary>
         /// <para type="description">Switch to fill the property SecurePassword with the password as SecureString, may need more time for execution</para>
         /// </summary>
-        [Parameter(ParameterSetName = "CredentialObject Output")]
+        [Parameter()]
         public SwitchParameter IncludeSecurePassword;
 
         /// <summary>
@@ -189,6 +190,7 @@ namespace PSCredentialManager.Cmdlet
     /// <para>LastWritten    : 23/04/2016 10:48:56</para>
     /// <para>PaswordSize    : 18</para>
     /// <para>Password       : Password1</para>
+    /// <para>SecurePassword : </para>
     /// <para>Persist        : SESSION</para>
     /// <para>AttributeCount : 0</para>
     /// <para>Attributes     : 0</para>
@@ -279,16 +281,17 @@ namespace PSCredentialManager.Cmdlet
 
             if (MyInvocation.BoundParameters.ContainsKey("SecurePassword"))
             {
+                Password = null;
+
                 //Argument validation
                 //Check password does not exceed 2560 bytes
-                byte[] byteArray = Encoding.Unicode.GetBytes(Password);
-                if (byteArray.Length > c_maxPasswordBytes)
+                int pwdlen = SecurePassword.Length * 2;
+                if (pwdlen > c_maxPasswordBytes)
                 {
                     Exception exception = new ArgumentOutOfRangeException($"SecurePassword", $"The specified password has exceeded {c_maxPasswordBytes} bytes");
-                    ErrorRecord error = new ErrorRecord(exception, "1", ErrorCategory.InvalidArgument, Password);
+                    ErrorRecord error = new ErrorRecord(exception, "1", ErrorCategory.InvalidArgument, "SecurePassword");
                     WriteError(error);
                 }
-                Password = SecurePassword.ToInsecureString();
             }
         }
 
@@ -298,6 +301,15 @@ namespace PSCredentialManager.Cmdlet
             {
                 UserName = Credentials.UserName;
                 SecurePassword = Credentials.Password;
+                Password = null;
+
+                int pwdlen = SecurePassword.Length * 2;
+                if (pwdlen > c_maxPasswordBytes)
+                {
+                    Exception exception = new ArgumentOutOfRangeException($"Credentials", $"The specified password has exceeded {c_maxPasswordBytes} bytes");
+                    ErrorRecord error = new ErrorRecord(exception, "1", ErrorCategory.InvalidArgument, "Credentials");
+                    WriteError(error);
+                }
             }
 
             //Create credential object

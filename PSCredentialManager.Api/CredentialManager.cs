@@ -57,8 +57,14 @@ namespace PSCredentialManager.Api
 
             if (!delete)
             {
-                string message = $"DeleteCred failed with the error code {lastError}.";
-                throw new Exception(message);
+                if(lastError == 1168)
+                {
+                    throw new CredentialNotFoundException($"DeleteCred failed with the error code {lastError} (credential not found).");
+                }
+                else
+                {
+                    throw new Exception($"DeleteCred failed with the error code {lastError}.");
+                }
             }
         }
 
