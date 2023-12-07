@@ -54,7 +54,7 @@ namespace PSCredentialManager.Cmdlet
         public string Target;
 
         /// <summary>
-        /// <para type="description">Specifies the type of credential to return, possible values are [Generic, DomainPassword, DomainCertificate, DomainVisiblePassword, DomainCertificate, DomainExtended, Maximum, MaximumEx]</para>
+        /// <para type="description">Specifies the type of credential to return, possible values are [Generic, DomainPassword, DomainCertificate, DomainVisiblePassword, GenericCertificate, DomainExtended, Maximum, MaximumEx]</para>
         /// </summary>
         [Parameter()]
         public CredType Type = CredType.Generic;
@@ -242,7 +242,7 @@ namespace PSCredentialManager.Cmdlet
         public string Comment = "Updated by: " + Environment.UserName + " on: " + DateTime.Now.ToShortDateString();
 
         /// <summary>
-        /// <para type="description">Type of credential to store, possible values are [Generic, DomainPassword, DomainCertificate, DomainVisiblePassword, DomainCertificate, DomainExtended, Maximum, MaximumEx]</para>
+        /// <para type="description">Type of credential to store, possible values are [Generic, DomainPassword, DomainCertificate, DomainVisiblePassword, GenericCertificate, DomainExtended, Maximum, MaximumEx]</para>
         /// </summary>
         [Parameter()]
         public CredType Type = CredType.Generic;
@@ -369,7 +369,7 @@ namespace PSCredentialManager.Cmdlet
         public string Target;
 
         /// <summary>
-        /// <para type="description">Specifies the type of credential to be deleted, possible values are [Generic, DomainPassword, DomainCertificate, DomainVisiblePassword, DomainCertificate, DomainExtended, Maximum, MaximumEx]</para>
+        /// <para type="description">Specifies the type of credential to be deleted, possible values are [Generic, DomainPassword, DomainCertificate, DomainVisiblePassword, GenericCertificate, DomainExtended, Maximum, MaximumEx]</para>
         /// </summary>
         [Parameter()]
         public CredType Type = CredType.Generic;
